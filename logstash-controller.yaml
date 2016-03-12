@@ -20,7 +20,7 @@ spec:
       serviceAccount: elk
       containers:
       - name: logstash
-        image: pires/logstash
+        image: larmog/logstash-k8s-armhf:2.2.0
         env:
         - name: KUBERNETES_TRUST_CERT
           value: "true"
@@ -29,12 +29,17 @@ spec:
           name: lumberjack
           protocol: TCP
         volumeMounts:
-        - mountPath: /certs
-          name: certs
+        - mountPath: /logstash/certs
+          name: logstash-cert
+        - mountPath: /logstash/config
+          name: logstash-conf
       volumes:
+      - secret:
+          secretName: logstash-ssl
+        name: logstash-cert
+      - secret:
+          secretName: logstash.conf
+        name: logstash-conf
       - emptyDir:
           medium: ""
         name: "storage"
-      - hostPath:
-          path: "/tmp"
-        name: "certs"

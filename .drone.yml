@@ -1,0 +1,22 @@
+clone:
+  environment:
+  - GIT_SSL_NO_VERIFY=true
+build:
+  image: hypriot/rpi-alpine-scratch
+  commands:
+  - cd logstash
+  - sed -e 's/quay.io\/pires\/docker-logstash:1.5.4/larmog\/logstash-armhf:2.2.0/g' Dockerfile > Dockerfile.armhf
+publish:
+  docker:
+    environment:
+    - DOCKER_LAUNCH_DEBUG=true
+    storage_driver: overlay
+    context: logstash
+    file: logstash/Dockerfile.armhf
+    username: $$DOCKER_USERNAME
+    password: $$DOCKER_PWD
+    email: lars.mogren@gmail.com
+    repo: larmog/logstash-k8s-armhf
+    tag:
+    - "2.2.0"
+    - latest
